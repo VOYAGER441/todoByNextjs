@@ -1,46 +1,96 @@
 import React from "react";
 
-const Todo = ({ id, title, description,mongoId, complete,  deleteTodo }) => {
+const Todo = ({ id, title, description, mongoId, complete, deleteTodo, updateTodo }) => {
   return (
     <>
-      <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-        <th
-          scope="row"
-          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-        >
+      <tr className="todo-row">
+        <th scope="row" className="todo-id">
           {id + 1}
         </th>
-        <td className="px-6 py-4">{title}</td>
-        <td className="px-6 py-4">{description}</td>
-        <td className="px-6 py-4">{complete ? "completed" : "pending"}</td>
-        <td className="px-6 py-4 flex gap-1">
-          <button
-            style={{
-              padding: "0.5rem 1rem",
-              color: "white",
-              backgroundColor: "#ef4444", // red-500 equivalent
-              borderRadius: "0.25rem",
-              outline: "none",
-              boxShadow: "0 0 0 2px #fca5a5", // ring-2 with red-300 equivalent
-            }}
-            onClick={() => deleteTodo(mongoId)}
-          >
+        <td className="todo-title">{title}</td>
+        <td className="todo-description">{description}</td>
+        <td className={`todo-status ${complete ? "completed" : "pending"}`}>
+          {complete ? "Completed" : "Pending"}
+        </td>
+        <td className="todo-actions">
+          <button className="delete-button" onClick={() => deleteTodo(mongoId)}>
             Delete
           </button>
-          <button
-            style={{
-              padding: "0.5rem 1rem",
-              color: "white",
-              backgroundColor: "#10b981", // green-500 equivalent
-              borderRadius: "0.25rem",
-              outline: "none",
-              boxShadow: "0 0 0 2px #fca5a5", // ring-2 with red-300 equivalent
-            }}
-          >
+          <button className="done-button" onClick={() => updateTodo(mongoId)}>
             Done
           </button>
         </td>
       </tr>
+
+      <style jsx>{`
+        .todo-row {
+          background-color: #ffffff; /* white */
+          border-bottom: 1px solid #d1d5db; /* gray-300 */
+          transition: background-color 0.3s ease;
+        }
+
+        .todo-row:hover {
+          background-color: #f9fafb; /* gray-100 */
+        }
+
+        .todo-id,
+        .todo-title,
+        .todo-description,
+        .todo-status {
+          padding: 16px;
+          font-size: 14px;
+          color: #374151; /* gray-700 */
+        }
+
+        .todo-id {
+          font-weight: 600;
+          color: #1f2937; /* gray-800 */
+        }
+
+        .todo-status.completed {
+          color: #10b981; /* green-500 */
+          font-weight: 600;
+        }
+
+        .todo-status.pending {
+          color: #ef4444; /* red-500 */
+          font-weight: 600;
+        }
+
+        .todo-actions {
+          padding: 16px;
+          display: flex;
+          gap: 8px;
+        }
+
+        .delete-button,
+        .done-button {
+          padding: 8px 16px;
+          color: #ffffff;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          transition: background-color 0.2s ease;
+        }
+
+        .delete-button {
+          background-color: #ef4444; /* red-500 */
+          border: none;
+        }
+
+        .delete-button:hover {
+          background-color: #dc2626; /* red-700 */
+        }
+
+        .done-button {
+          background-color: #10b981; /* green-500 */
+          border: none;
+        }
+
+        .done-button:hover {
+          background-color: #059669; /* green-600 */
+        }
+      `}</style>
     </>
   );
 };
