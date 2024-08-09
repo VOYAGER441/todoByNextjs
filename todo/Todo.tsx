@@ -1,6 +1,32 @@
 import React from "react";
 
-const Todo = ({ id, title, description, mongoId, complete, deleteTodo, updateTodo }) => {
+// interface TodoProps {
+//   id: number;
+//   title: string;
+//   description: string;
+//   mongoId: string;
+//   complete: boolean;
+//   deleteTodo: (id: string) => void;
+//   updateTodo: (id: string) => void;
+// }
+
+const Todo = ({
+  id,
+  title,
+  description,
+  complete,
+  deleteTodo,
+  mongoId,
+  updateTodo,
+}: {
+  id: number;
+  title: string;
+  description: string;
+  mongoId: string;
+  complete: boolean;
+  deleteTodo: (id: string) => void;
+  updateTodo: (id: string) => void;
+}) => {
   return (
     <>
       <tr className="todo-row">
