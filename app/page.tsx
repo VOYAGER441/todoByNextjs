@@ -6,64 +6,72 @@ import React, { useEffect, useState } from "react";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// Define the interface for form data
+interface FormData {
+  title: string;
+  description: string;
+}
+
+// Define the interface for a Todo item
+interface TodoItem {
+  _id: string;
+  title: string;
+  description: string;
+  isCompleted: boolean;
+}
 
 export default function Home() {
-
-  //useState deconstruction
-  const [formData, setFormData] = useState({
+  // State for form data
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
   });
 
-  const [todoData, setTotoData] = useState([]);
+  // State for todo items
+  const [todoData, setTodoData] = useState<TodoItem[]>([]);
 
-  //function for get todo
+  // Fetch todos
   const fetchTodo = async () => {
     const response = await axios.get("/api");
-    setTotoData(response.data.todos);
+    setTodoData(response.data.todos);
   };
-  
-  //function for delete todo
-  const deleteTodo = async (id: any) => {
+
+  // Delete todo
+  const deleteTodo = async (id: string) => {
     const response = await axios.delete("/api", {
       params: {
         mongoId: id,
-      }
+      },
     });
     toast.success(response.data.msg);
     fetchTodo();
   };
-  
+
   useEffect(() => {
     fetchTodo();
   }, []);
-  
-  //function for update todo
-  const updateTodo=async (id:any)=>{
+
+  // Update todo
+  const updateTodo = async (id: string) => {
     try {
-      const response=await axios.put("/api",null,{
-        params: { mongoId: id}
+      const response = await axios.put("/api", null, {
+        params: { mongoId: id },
       });
       toast.success(response.data.msg);
       fetchTodo();
     } catch (error) {
       toast.error("Failed to update Todo.");
     }
-  }
-  
-  
-  //function for change todo
-  const handelChange = (e: any) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setFormData((f) => ({ ...f, [name]: value }));
-    console.log(formData);
   };
-  
-  
-  
-  //function for create todo
-  const onSubmitHandler = async (e: any) => {
+
+  // Handle form changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle form submission
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await axios.post("/api", formData);
@@ -74,20 +82,17 @@ export default function Home() {
       });
       fetchTodo();
     } catch (error) {
-      toast.error("error");
+      toast.error("Error");
     }
   };
 
   return (
     <>
       <ToastContainer theme="dark" />
-      <form
-        onSubmit={onSubmitHandler}
-        className="form-container"
-      >
+      <form onSubmit={onSubmitHandler} className="form-container">
         <input
           value={formData.title}
-          onChange={handelChange}
+          onChange={handleChange}
           type="text"
           name="title"
           placeholder="Enter the title"
@@ -95,15 +100,12 @@ export default function Home() {
         />
         <textarea
           value={formData.description}
-          onChange={handelChange}
+          onChange={handleChange}
           className="textarea-field"
           placeholder="Enter the Description"
           name="description"
         ></textarea>
-        <button
-          type="submit"
-          className="submit-button"
-        >
+        <button type="submit" className="submit-button">
           Add TODO
         </button>
       </form>
@@ -120,20 +122,18 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {todoData.map((item, index) => {
-              return (
-                <Todo
-                  key={index}
-                  id={index}
-                  title={item.title}
-                  description={item.description}
-                  complete={item.isCompleted}
-                  mongoId={item._id}
-                  deleteTodo={deleteTodo}
-                  updateTodo={updateTodo}
-                />
-              );
-            })}
+            {todoData.map((item, index) => (
+              <Todo
+                key={item._id}
+                id={index}
+                title={item.title}
+                description={item.description}
+                complete={item.isCompleted}
+                mongoId={item._id}
+                deleteTodo={deleteTodo}
+                updateTodo={updateTodo}
+              />
+            ))}
           </tbody>
         </table>
       </div>
